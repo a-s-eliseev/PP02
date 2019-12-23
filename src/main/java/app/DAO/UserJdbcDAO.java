@@ -1,6 +1,7 @@
 package app.DAO;
 
 import app.entities.User;
+import app.util.DBHelper;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -8,17 +9,12 @@ import java.util.List;
 
 public class UserJdbcDAO implements UserDao {
 
-    private Session session;
-    private Transaction transaction;
-    private List<User> users = null;
-    private User user = null;
-
-    public UserJdbcDAO(Session session) {
-        this.session = session;
-    }
+    public UserJdbcDAO() {}
 
     public void insertUser(User user) {
-        try {
+        Transaction transaction = null;
+
+        try (Session session = DBHelper.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
             session.save(user);
             transaction.commit();
@@ -26,15 +22,14 @@ public class UserJdbcDAO implements UserDao {
             if (transaction != null) {
                 transaction.rollback();
             }
-        } finally {
-            if (session != null) {
-                session.close();
-            }
         }
     }
 
     public User selectUser(Long id) {
-        try {
+        Transaction transaction = null;
+        User user = null;
+
+        try (Session session = DBHelper.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
             user = session.get(User.class, id);
             transaction.commit();
@@ -42,17 +37,15 @@ public class UserJdbcDAO implements UserDao {
             if (transaction != null) {
                 transaction.rollback();
             }
-        } finally {
-            if (session != null) {
-                session.close();
-            }
         }
         return user;
     }
 
     public List<User> selectAllUsers() {
+        Transaction transaction = null;
+        List<User> users = null;
 
-        try {
+        try (Session session = DBHelper.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
             users = session.createQuery("SELECT u FROM User u").getResultList();
             transaction.commit();
@@ -60,16 +53,16 @@ public class UserJdbcDAO implements UserDao {
             if (transaction != null) {
                 transaction.rollback();
             }
-        } finally {
-            if (session != null) {
-                session.close();
-            }
         }
+
         return users;
     }
 
     public void deleteUser(Long id) {
-        try {
+        Transaction transaction = null;
+        User user;
+
+        try (Session session = DBHelper.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
             user = session.get(User.class, id);
 
@@ -82,25 +75,19 @@ public class UserJdbcDAO implements UserDao {
             if (transaction != null) {
                 transaction.rollback();
             }
-        } finally {
-            if (session != null) {
-                session.close();
-            }
         }
     }
 
     public void updateUser(User user) {
-        try {
+        Transaction transaction = null;
+
+        try (Session session = DBHelper.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
             session.update(user);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
-            }
-        } finally {
-            if (session != null) {
-                session.close();
             }
         }
     }

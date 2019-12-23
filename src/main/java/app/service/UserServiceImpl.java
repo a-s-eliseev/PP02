@@ -25,26 +25,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void newUser(User user) {
-        new UserJdbcDAO(sessionFactory.openSession()).insertUser(user);
+        new UserJdbcDAO().insertUser(user);
     }
 
     @Override
     public List<User> listUser() {
-        return new UserJdbcDAO(sessionFactory.openSession()).selectAllUsers();
+        return new UserJdbcDAO().selectAllUsers();
     }
 
     @Override
     public User selectUser(Long id) {
-        return new UserJdbcDAO(sessionFactory.openSession()).selectUser(id);
+        return new UserJdbcDAO().selectUser(id);
     }
 
     @Override
     public void editUser(User user) {
-        new UserJdbcDAO(sessionFactory.openSession()).updateUser(user);
+        new UserJdbcDAO().updateUser(user);
     }
 
     @Override
     public void deleteUser(Long id) {
-        new UserJdbcDAO(sessionFactory.openSession()).deleteUser(id);
+        new UserJdbcDAO().deleteUser(id);
     }
 }
